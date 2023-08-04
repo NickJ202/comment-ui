@@ -57,7 +57,7 @@ export default function AssetData(props: IProps) {
 						const title = tags.find((tag: any) => tag.name === 'Title');
 						const renderWith = tags.find((tag: any) => tag.name === 'Render-With');
 
-						props.handleUpdate(title.value);
+						props.handleUpdate(apiResponse.data.transactions.edges[0].node.id, title.value);
 
 						setAsset({
 							data: {

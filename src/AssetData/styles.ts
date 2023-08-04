@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
 	height: 100%;
 	width: 100%;
 	border: 1px solid #D3D3D3;
-	border-radius: 7.5px;
+	border-radius: 2.5px;
 	overflow: hidden;
 `;
 

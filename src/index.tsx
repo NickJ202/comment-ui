@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { AssetData } from 'AssetData';
 import { OwnerInfo } from 'OwnerInfo';
+import { formatAddress } from 'OwnerInfo/OwnerInfo';
 
 import { fetchAPI } from 'helpers/utils';
 
@@ -11,6 +12,8 @@ function App() {
 	const queryParam = parseQuery(window.location.search);
 
 	const [comment, setComment] = React.useState<{ text: string; dataSource: string; owner: any } | null>(null);
+
+	const [dataSourceId, setDataSourceId] = React.useState<string | null>(null);
 	const [dataSourceTitle, setDataSourceTitle] = React.useState<string | null>(null);
 
 	React.useEffect(() => {
@@ -38,8 +41,7 @@ function App() {
 						`,
 					};
 
-					const endpoint = 'https://node2.bundlr.network/graphql';
-					const txResponse = await fetchAPI({ query: txQuery, endpoint: endpoint });
+					const txResponse = await fetchAPI({ query: txQuery, endpoint: 'https://node2.bundlr.network/graphql' });
 
 					if (txResponse.data && txResponse.data.transactions && txResponse.data.transactions.edges.length) {
 						const tags = txResponse.data.transactions.edges[0].node.tags;
@@ -70,28 +72,41 @@ function App() {
 						};
 
 						let finalProfile: any = null;
-						const ownerResponse = await fetchAPI({ query: ownerQuery, endpoint: endpoint });
+						const ownerResponse = await fetchAPI({ query: ownerQuery, endpoint: 'https://arweave.net/graphql' });
 						if (ownerResponse.data && ownerResponse.data.transactions && ownerResponse.data.transactions.edges.length) {
 							const ownerData = await fetch(`https://arweave.net/${ownerResponse.data.transactions.edges[0].node.id}`);
 							if (ownerData.status === 200) {
 								let fetchedProfile: any = await ownerData.text();
 								fetchedProfile = JSON.parse(fetchedProfile);
+								
+								let avatar = fetchedProfile ? fetchedProfile.avatar : null;
+								if (avatar === 'ar://OrG-ZG2WN3wdcwvpjz1ihPe4MI24QBJUpsJGIdL85wA') avatar = null;
+								if (avatar && avatar.includes('ar://')) avatar = avatar.substring(5);
+
 								finalProfile = {
 									handle: fetchedProfile.handle ? fetchedProfile.handle : null,
-									avatar: fetchedProfile.avatar ? fetchedProfile.avatar : null,
+									avatar: avatar,
 									twitter: fetchedProfile.links.twitter ? fetchedProfile.links.twitter : null,
 									discord: fetchedProfile.links.discord ? fetchedProfile.links.discord : null,
 									walletAddress: initialOwner.value,
 								};
 							} else {
 								finalProfile = {
-									handle: null,
+									handle: formatAddress(initialOwner.value, false),
 									avatar: null,
 									twitter: null,
 									discord: null,
 									walletAddress: initialOwner.value,
 								};
 							}
+						} else {
+							finalProfile = {
+								handle: formatAddress(initialOwner.value, false),
+								avatar: null,
+								twitter: null,
+								discord: null,
+								walletAddress: initialOwner.value,
+							};
 						}
 
 						setComment({
@@ -107,25 +122,32 @@ function App() {
 		})();
 	}, []);
 
-	console.log(comment);
-
 	function getComment() {
 		if (comment) {
 			return (
 				<>
 					<S.AWrapper>
-						{dataSourceTitle && (
+						{dataSourceId && dataSourceTitle && (
 							<S.AHeader>
-								<span>Comment on</span>
-								<p>{dataSourceTitle}</p>
+								<OwnerInfo owner={comment.owner} loading={false} />
+								<S.Divider>-</S.Divider>
+								<span>commented on &nbsp;</span>
+								<a href={`https://bazar.arweave.dev/#/asset/${dataSourceId}`} target={'_blank'}>
+									{dataSourceTitle}
+								</a>
 							</S.AHeader>
 						)}
 						<S.Asset>
-							<AssetData id={comment.dataSource} handleUpdate={(title: string) => setDataSourceTitle(title)} />
+							<AssetData
+								id={comment.dataSource}
+								handleUpdate={(id: string, title: string) => {
+									setDataSourceId(id);
+									setDataSourceTitle(title);
+								}}
+							/>
 						</S.Asset>
 					</S.AWrapper>
 					<S.CWrapper>
-						<OwnerInfo owner={comment.owner} loading={false} />
 						<S.Comment>
 							<p>{comment.text}</p>
 						</S.Comment>

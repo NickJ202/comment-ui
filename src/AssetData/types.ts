@@ -4,5 +4,5 @@ export interface IProps {
 	frameMinHeight?: number;
 	autoLoad?: boolean;
 	loadRenderer?: boolean;
-	handleUpdate: (title: string) => void;
+	handleUpdate: (id: string, title: string) => void;
 }
