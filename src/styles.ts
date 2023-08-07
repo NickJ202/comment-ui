@@ -28,17 +28,35 @@ export const AWrapper = styled.div`
 export const AHeader = styled.div`
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
+	max-width: 100%;
 	a,
 	span {
 		font-size: 14px;
 		font-weight: 400;
 		color: #666666;
+		max-width: 100%;
+		overflow-x: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 	a {
 		&:hover {
 			color: #444444;
 		}
 	}
+	@media (max-width: 540px) {
+		a {
+			margin: 10px 0;
+			max-width: 75%;
+		}
+	}
+`;
+
+export const AFlex = styled.div`
+	display: flex;
+	align-items: center;
+	max-width: 100%;
 `;
 
 export const Divider = styled.p`
@@ -48,6 +66,7 @@ export const Divider = styled.p`
 export const Asset = styled.div`
 	height: 20px;
 	width: 20px;
+	margin: 0 0 0 10px;
 `;
 
 export const CWrapper = styled.div`

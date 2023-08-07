@@ -78,7 +78,7 @@ function App() {
 							if (ownerData.status === 200) {
 								let fetchedProfile: any = await ownerData.text();
 								fetchedProfile = JSON.parse(fetchedProfile);
-								
+
 								let avatar = fetchedProfile ? fetchedProfile.avatar : null;
 								if (avatar === 'ar://OrG-ZG2WN3wdcwvpjz1ihPe4MI24QBJUpsJGIdL85wA') avatar = null;
 								if (avatar && avatar.includes('ar://')) avatar = avatar.substring(5);
@@ -127,25 +127,31 @@ function App() {
 			return (
 				<>
 					<S.AWrapper>
-						{dataSourceId && dataSourceTitle && (
-							<S.AHeader>
-								<OwnerInfo owner={comment.owner} loading={false} />
-								<S.Divider>-</S.Divider>
-								<span>commented on &nbsp;</span>
-								<a href={`https://bazar.arweave.dev/#/asset/${dataSourceId}`} target={'_blank'}>
-									{dataSourceTitle}
-								</a>
-							</S.AHeader>
-						)}
-						<S.Asset>
-							<AssetData
-								id={comment.dataSource}
-								handleUpdate={(id: string, title: string) => {
-									setDataSourceId(id);
-									setDataSourceTitle(title);
-								}}
-							/>
-						</S.Asset>
+						<S.AHeader>
+							{dataSourceId && dataSourceTitle && (
+								<S.AFlex>
+									<OwnerInfo owner={comment.owner} loading={false} />
+									<S.Divider>-</S.Divider>
+									<span>commented on &nbsp;</span>
+								</S.AFlex>
+							)}
+							<S.AFlex>
+								{dataSourceId && dataSourceTitle && (
+									<a href={`https://bazar.arweave.dev/#/asset/${dataSourceId}`} target={'_blank'}>
+										{dataSourceTitle}
+									</a>
+								)}
+								<S.Asset>
+									<AssetData
+										id={comment.dataSource}
+										handleUpdate={(id: string, title: string) => {
+											setDataSourceId(id);
+											setDataSourceTitle(title);
+										}}
+									/>
+								</S.Asset>
+							</S.AFlex>
+						</S.AHeader>
 					</S.AWrapper>
 					<S.CWrapper>
 						<S.Comment>

@@ -34,9 +34,16 @@ export const FramePreview = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	position: relative;
 	svg {
 		height: 100px;
 		width: 100px;
+		max-height: 75%;
+		max-width: 75%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 `;
 
@@ -83,9 +90,16 @@ export const Preview = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	position: relative;
 	svg {
 		height: 57.5px;
 		width: 57.5px;
+		max-height: 50%;
+		max-width: 50%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 `;
 
