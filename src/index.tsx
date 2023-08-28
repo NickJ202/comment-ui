@@ -41,7 +41,10 @@ function App() {
 						`,
 					};
 
-					const txResponse = await fetchAPI({ query: txQuery, endpoint: 'https://node2.bundlr.network/graphql' });
+					let txResponse = await fetchAPI({ query: txQuery, endpoint: 'https://node2.bundlr.network/graphql' });
+					if (txResponse.data && txResponse.data.transactions && !(txResponse.data.transactions.edges.length)) {
+						txResponse = await fetchAPI({ query: txQuery, endpoint: 'https://arweave.net/graphql' });
+					}
 
 					if (txResponse.data && txResponse.data.transactions && txResponse.data.transactions.edges.length) {
 						const tags = txResponse.data.transactions.edges[0].node.tags;

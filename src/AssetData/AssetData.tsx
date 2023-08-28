@@ -51,8 +51,12 @@ export default function AssetData(props: IProps) {
 							}
 						`,
 					};
-					const apiResponse = await fetchAPI({ query: query, endpoint: 'https://node2.bundlr.network/graphql' });
-					if (apiResponse.data && apiResponse.data.transactions) {
+
+					let apiResponse = await fetchAPI({ query: query, endpoint: 'https://node2.bundlr.network/graphql' });
+					if (apiResponse.data && apiResponse.data.transactions && !(apiResponse.data.transactions.edges.length)) {
+						apiResponse = await fetchAPI({ query: query, endpoint: 'https://arweave.net/graphql' });
+					}
+					if (apiResponse.data && apiResponse.data.transactions && apiResponse.data.transactions.edges.length) {
 						const tags = apiResponse.data.transactions.edges[0].node.tags;
 						const title = tags.find((tag: any) => tag.name === 'Title');
 						const renderWith = tags.find((tag: any) => tag.name === 'Render-With');
